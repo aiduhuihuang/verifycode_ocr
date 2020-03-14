@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h3 mb-0 text-gray-800">{{ goods_title }}</h1>
+{#    水平线#}
+    <hr class="sidebar-divider">
+{#    表格#}
+      <table class="table table-bordered" >
+          <thead>
+              <tr>
+                  <td>商品编号</td>
+                  <td>商品名称</td>
+                  <td>商品价格</td>
+                  <td>商品数量</td>
+                  <td>商品产地</td>
+                  <td>保质期</td>
+                  <td>生产日期</td>
+                  <td>供应商</td> <!--供应商id-->
+                  <td>操作</td>
+              </tr>
+          </thead>
+      <tbody>
+      {% for ginfo in page_obj %}
+          {% if ginfo.Goods_status == 0 %}
+            <tr>
+                <td>{{ ginfo.Goods_num }}</td>
+                <td>{{ ginfo.Goods_name }}</td>
+                <td>$ {{ ginfo.Goods_price }}</td>
+                <td>{{ ginfo.Goods_count }}</td>
+                <td>{{ ginfo.Goods_location }}</td>
+                <td>{{ ginfo.Goods_safe_date}}</td>
+                <td>{{ ginfo.Goods_pro_date|date:"Y-m-d" }}</td>
+                <td>{{ ginfo.supplier.sup_name }}</td>
+                <td>
+                    <a class="btn btn-primary active" href="/loginuser/updategoods/{{ ginfo.id }}/">修改</a>
+                    {% if ginfo.Goods_status == 0 %}
+                    <a class="btn btn-warning active" href="/loginuser/goods_status/{{ ginfo.id }}/down/">下架</a>
+                        {% else %}
+                         <a class="btn btn-primary active" href="/loginuser/goods_status/{{ ginfo.id }}/up/">上架</a>
+                    {% endif %}
+                </td>
+            </tr>
+              {% else %}
+              <tr style="color: red">
+                <td>{{ ginfo.Goods_num }}</td>
+                <td>{{ ginfo.Goods_name }}</td>
+                <td>$ {{ ginfo.Goods_price }}</td>
+                <td>{{ ginfo.Goods_count }}</td>
+                <td>{{ ginfo.Goods_location }}</td>
+                <td>{{ ginfo.Goods_safe_date}}</td>
+                <td>{{ ginfo.Goods_pro_date|date:"Y-m-d" }}</td>
+                <td>{{ ginfo.supplier.sup_name }}</td>
+                <td>
+                    <a class="btn btn-primary active" href="/loginuser/updategoods/{{ ginfo.id }}/">修改</a>
+                    {% if ginfo.Goods_status == 0 %}
+                    <a class="btn btn-warning active" href="/loginuser/goods_status/{{ ginfo.id }}/down/">下架</a>
+                        {% else %}
+                         <a class="btn btn-primary active" href="/loginuser/goods_status/{{ ginfo.id }}/up/">上架</a>
+                    {% endif %}
+                </td>
+            </tr>
+          {% endif %}
+      {% endfor %}
+
+      </tbody>
+      </table>
+
+    {% if goods_obj.count > 0 %}
+        <p class="fas" style="float: left"><span style="color: blue"> 总页数: </span>{{ paginator.num_pages }}  页 &nbsp;&nbsp;<span style="color: blue">当前页: </span>{{ page_obj.number }} 页
+         <span style="color: blue">合计条数: </span>{{ goods_obj.count }} 条
+        </p>
+        <ul class="pagination" style="float: right">
+        {% if page_obj.has_previous %}
+             <li class="paginate_button page-item">
+                    <a href="/loginuser/goods_list/1/{{ status }}/" class="page-link">首页</a>
+             </li>
+            <li class="paginate_button page-item">
+                <a href="/loginuser/goods_list/{{ page_obj.previous_page_number }}/{{ status }}/" class="page-link">上一页</a>
+            </li>
+        {% endif %}
+        {% for page in paginator.page_range %}
+            {% if page_obj.number == page %}
+                <li class="paginate_button page-item active">
+                    <a href="/loginuser/goods_list/{{ page }}/{{ status }}" class="page-link">{{ page }}</a>
+                </li>
+            {% else %}
+                 <li class="paginate_button page-item">
+                    <a href="/loginuser/goods_list/{{ page }}/{{ status }}" class="page-link">{{ page }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="paginate_button page-item">
+                    <a href="/loginuser/goods_list/{{ page_obj.next_page_number }}/{{ status }}/" class="page-link">下一页</a>
+             </li>
+            <li class="paginate_button page-item">
+                <a href="/loginuser/goods_list/{{ paginator.num_pages }}/{{ status }}/" class="page-link">尾页</a>
+            </li>
+        {% endif %}
+        </ul>
+        {% else %}
+        <!--显示提示信息-->
+    <p class="fas" style="color: red">{{ message }}</p>
+    {% endif %}
+{% endblock %}

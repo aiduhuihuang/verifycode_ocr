@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义过滤器</title>
+</head>
+<body>
+    <form action="" method="post">
+        {% csrf_token %}
+    手机号:<input type="text" name="phone"
+       oninput="value=value.replace(/[^\d]/g,'')" value="">
+        <input type="submit" value="提 交">
+    </form>
+    {% load filters %}
+    {% if num %}
+    <p>结果为:{{ num|myfilter }}</p>
+    {% endif %}
+    {{ message }}
+</body>
+</html>

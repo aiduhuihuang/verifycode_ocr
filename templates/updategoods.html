@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1 class="h3 mb-0 text-gray-800">修改商品</h1>
+{#    水平线#}
+    <hr class="sidebar-divider">
+{#    表单#}
+    <form class="form-group" style="margin-left: 40px" method="post">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label  class="col-sm-1 control-label">商品编码:</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" id="goodsnum" name="goodsnum" placeholder="0000000000001" value="{{ u_goods_obj.Goods_num }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-1 control-label">商品名称:</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" id="goodsname" name="goodsname" placeholder="四川邦克科技有限公司" value="{{ u_goods_obj.Goods_name }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-1 control-label">销售单价:</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" name="goodsprice" id="goodsprice" placeholder="$ 2000.00" value="${{ u_goods_obj.Goods_price }}">
+            </div>
+            <label class="col-sm-1" style="font-size: 25px">元</label>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-1 control-label">商品数量:</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="goodscount" id="goodscount" placeholder="数量" value="{{ u_goods_obj.Goods_count }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-1 control-label">生产日期:</label>
+            <div class="col-sm-4">
+              <input type="datetime-local" class="form-control" name="goodsdate" id="goodsdate" placeholder="" value="{{ u_goods_obj.Goods_pro_date|date:"Y-m-d" }}T{{ u_goods_obj.Goods_pro_date|time:"H:i" }}">
+            </div>
+        </div>
+        <hr class="sidebar-divider">
+        <div class="form-row row">
+            <label class="col-sm-1 control-label">商品状态:</label>
+            {% if u_goods_obj.Goods_status == "0" %}
+                <label class="radio-inline col-sm-1">
+                <input type="radio" name="radiostatus" id="inlineRadio1" value="0" checked> 在售
+                </label>
+                 <label class="radio-inline col-sm-1">
+                <input type="radio" name="radiostatus" id="inlineRadio2" value="1"> 下架
+                </label>
+            {% else %}
+                <label class="radio-inline col-sm-1">
+                <input type="radio" name="radiostatus" id="inlineRadio1" value="0"> 在售
+                </label>
+                <label class="radio-inline col-sm-1">
+                <input type="radio" name="radiostatus" id="inlineRadio2" value="1" checked> 下架
+                </label>
+            {% endif %}
+        </div>
+        <div class="form-row row">
+            <label class="col-sm-1">供 应 商:</label>
+            <div class="col-sm-7">
+                <select class="form-control" name="select_g">
+                    {% for foo in sup_obj %}
+                        {% if foo.sup_name == u_goods_obj.supplier.sup_name %}
+                        <option value="{{ foo.id }}:{{ foo.sup_name }}:{{ foo.sup_country }}:{{ foo.sup_province }}:{{ foo.sup_city }}" selected>{{ foo.id }}:{{ foo.sup_name }}:{{ foo.sup_country }}:{{ foo.sup_province }}:{{ foo.sup_city }}</option>
+                        {% else %}
+                        <option value="{{ foo.id }}:{{ foo.sup_name }}:{{ foo.sup_country }}:{{ foo.sup_province }}:{{ foo.sup_city }}">{{ foo.id }}:{{ foo.sup_name }}:{{ foo.sup_country }}:{{ foo.sup_province }}:{{ foo.sup_city }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-sm-2">
+                <a href="#" class="btn btn-primary">增加供应商</a>
+            </div>
+        </div>
+         <hr class="sidebar-divider">
+        <div class="form-group row">
+            <label class="col-sm-1 control-label">成 本 价:</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" name="goodsinp" id="goodsinp" placeholder="商品进价" value="${{u_goods_obj.Goods_inprice  }}">
+            </div>
+             <label class="col-sm-1" style="font-size: 25px">元</label>
+        </div>
+        <hr class="sidebar-divider">
+         <div class="form-group row">
+            <label class="col-sm-1 control-label">商品产地:</label>
+            <div class="col-sm-4">
+              <input type="text" class="form-control" name="goodscity" id="goodscity" placeholder="商品产地" value="{{ u_goods_obj.Goods_location }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-sm-1 control-label">保质期(天):</label>
+            <div class="col-sm-3">
+              <input type="text" class="form-control" name="goodssafe" id="goodssafe" placeholder="保质期" value="{{ u_goods_obj.Goods_safe_date }}">
+            </div>
+            <label class="col-sm-1" style="font-size: 25px">天</label>
+        </div>
+
+
+        <!--按钮-->
+        <div class="form-row row">
+            <label class="col-sm-2"></label>
+            <!--操作表单获取值-->
+            <button type="submit" class="btn btn-primary col-sm-1 ">修 改</button>
+            <label class="col-sm-1"></label>
+            <a href="{{ back_ulr }}" class="btn btn-primary col-sm-1 ">返 回</a>
+            <label class="col-sm-1"></label>
+            <a href="/" class="btn btn-primary col-sm-1 ">首 页</a>
+        </div>
+    </form>
+    <!--增加数据是否成功的消息-->
+    {% if message == "修改数据成功" %}
+        <p style="color: blue;">{{ message }}</p>
+    {% else %}
+        <p style="color: red;">{{ message }}</p>
+    {% endif %}
+{% endblock %}
